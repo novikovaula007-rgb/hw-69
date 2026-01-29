@@ -12,13 +12,14 @@ export interface IShow {
 }
 
 export interface IShowAPIMutation {
-    id: number,
-    name: string,
-    summary: string,
-    image: {
-        medium: string,
-        original: string,
+    show: {
+        id: number,
+        name: string,
+        summary: string,
+        image: {
+            medium: string,
+            original: string,
+        }
+        genres: string[]
     },
-    genres: string[]
 }
-

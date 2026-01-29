@@ -27,8 +27,8 @@ export const fetchSearch = createAsyncThunk<IShow[], string>(
         const response = await axiosAPI.get<IShowAPIMutation[]>(`/search/shows?q=${name}`);
         return response.data.map(showSearch => {
             return {
-                id: showSearch.id,
-                name: showSearch.name
+                id: showSearch.show.id,
+                name: showSearch.show.name
             }
         })
     }
@@ -40,11 +40,11 @@ export const fetchShow = createAsyncThunk<IShowAPI, number>(
         const response = await axiosAPI.get<IShowAPIMutation>(`shows/${id}`);
         const showData = response.data;
         return {
-            id: showData.id,
-            name: showData.name,
-            image: showData.image.medium,
-            description: showData.summary,
-            genres: showData.genres,
+            id: showData.show.id,
+            name: showData.show.name,
+            image: showData.show.image.medium,
+            description: showData.show.summary,
+            genres: showData.show.genres,
         };
     }
 )
@@ -57,12 +57,13 @@ const TVSeriesSlice = createSlice({
         builder
             .addCase(fetchSearch.fulfilled, (state, action) => {
                 state.shows = action.payload;
+                state.loading.loadingFetchSearch = false;
             })
             .addCase(fetchSearch.pending, (state) => {
-                state.loading.loadingFetchShow = true;
+                state.loading.loadingFetchSearch = true;
             })
             .addCase(fetchSearch.rejected, (state) => {
-                state.loading.loadingFetchShow = false;
+                state.loading.loadingFetchSearch = false;
             })
             .addCase(fetchShow.fulfilled, (state, action) => {
                 state.currentShow = action.payload;
