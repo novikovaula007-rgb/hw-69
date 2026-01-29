@@ -5,13 +5,17 @@ import App from './App.tsx'
 import {CssBaseline} from "@mui/material";
 import {BrowserRouter} from "react-router-dom";
 import {ToastContainer} from "react-toastify";
+import {store} from "./app/store.ts";
+import {Provider} from "react-redux";
 
 createRoot(document.getElementById('root')!).render(
     <StrictMode>
         <BrowserRouter>
-            <CssBaseline/>
-            <App/>
-            <ToastContainer/>
+            <Provider store={store}>
+                <CssBaseline/>
+                <App/>
+                <ToastContainer/>
+            </Provider>
         </BrowserRouter>
     </StrictMode>,
 )
