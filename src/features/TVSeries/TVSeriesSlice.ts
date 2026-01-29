@@ -1,6 +1,7 @@
-import type {IShow, IShowAPI} from "../../types";
-import {createSlice} from "@reduxjs/toolkit";
+import type {IShow, IShowAPI, IShowAPIMutation} from "../../types";
+import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import type {RootState} from "../../app/store.ts";
+import {axiosAPI} from "../../axiosAPI.ts";
 
 interface TVSeriesState {
     currentShow: IShowAPI | null,
@@ -20,10 +21,60 @@ const initialState: TVSeriesState = {
     }
 }
 
+export const fetchSearch = createAsyncThunk<IShow[], string>(
+    'TVSeries/fetchSearch',
+    async (name) => {
+        const response = await axiosAPI.get<IShowAPIMutation[]>(`/search/shows?q=${name}`);
+        return response.data.map(showSearch => {
+            return {
+                id: showSearch.id,
+                name: showSearch.name
+            }
+        })
+    }
+)
+
+export const fetchShow = createAsyncThunk<IShowAPI, number>(
+    'TVSeries/fetchShow',
+    async (id) => {
+        const response = await axiosAPI.get<IShowAPIMutation>(`shows/${id}`);
+        const showData = response.data;
+        return {
+            id: showData.id,
+            name: showData.name,
+            image: showData.image.medium,
+            description: showData.summary,
+            genres: showData.genres,
+        };
+    }
+)
+
 const TVSeriesSlice = createSlice({
     name: 'TVSeries',
     initialState,
-    reducers: {}
+    reducers: {},
+    extraReducers: (builder) => {
+        builder
+            .addCase(fetchSearch.fulfilled, (state, action) => {
+                state.shows = action.payload;
+            })
+            .addCase(fetchSearch.pending, (state) => {
+                state.loading.loadingFetchShow = true;
+            })
+            .addCase(fetchSearch.rejected, (state) => {
+                state.loading.loadingFetchShow = false;
+            })
+            .addCase(fetchShow.fulfilled, (state, action) => {
+                state.currentShow = action.payload;
+                state.loading.loadingFetchShow = false;
+            })
+            .addCase(fetchShow.pending, (state) => {
+                state.loading.loadingFetchShow = true;
+            })
+            .addCase(fetchShow.rejected, (state) => {
+                state.loading.loadingFetchShow = false;
+            })
+    }
 })
 
 export const selectTVSearchShows = (state: RootState) => state.TVSeries.shows;

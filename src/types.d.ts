@@ -1,5 +1,5 @@
 export interface IShowAPI {
-    id: string,
+    id: number,
     name: string,
     description: string,
     image: string,
@@ -7,6 +7,18 @@ export interface IShowAPI {
 }
 
 export interface IShow {
-    id: string,
+    id: number,
     name: string
 }
+
+export interface IShowAPIMutation {
+    id: number,
+    name: string,
+    summary: string,
+    image: {
+        medium: string,
+        original: string,
+    },
+    genres: string[]
+}
+
