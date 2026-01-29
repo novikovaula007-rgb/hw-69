@@ -3,10 +3,12 @@ import {Container} from "@mui/material";
 import TVSeries from "./containers/TVSeries/TVSeries.tsx";
 import TVSeriesCard from "./containers/TVSeriesCard/TVSeriesCard.tsx";
 import NotFoundPage from "./containers/NotFoundPage/NotFoundPage.tsx";
+import NavBar from "./components/NavBar/NavBar.tsx";
 
 const App = () => {
     return (
         <>
+            <NavBar/>
             <main>
                 <Container maxWidth='lg' sx={{mt: 6}}>
                     <Routes>
